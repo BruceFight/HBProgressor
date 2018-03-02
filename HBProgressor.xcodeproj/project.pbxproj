@@ -104,11 +104,11 @@
 				2A498DEB2047AD820064C0B2 /* AppDelegate.swift */,
 				2A498DED2047AD820064C0B2 /* ViewController.swift */,
 				2A498E192047ADAA0064C0B2 /* HBProgressView.swift */,
+				2A498E1F204803950064C0B2 /* HBClipViewController.swift */,
 				2A498DEF2047AD820064C0B2 /* Main.storyboard */,
 				2A498DF22047AD820064C0B2 /* Assets.xcassets */,
 				2A498DF42047AD820064C0B2 /* LaunchScreen.storyboard */,
 				2A498DF72047AD820064C0B2 /* Info.plist */,
-				2A498E1F204803950064C0B2 /* HBClipViewController.swift */,
 			);
 			path = HBProgressor;
 			sourceTree = "<group>";
@@ -437,6 +437,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AUU237XZLK;
 				INFOPLIST_FILE = HBProgressor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spark.JB.HBProgressor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -452,6 +453,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AUU237XZLK;
 				INFOPLIST_FILE = HBProgressor/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.spark.JB.HBProgressor;
 				PRODUCT_NAME = "$(TARGET_NAME)";

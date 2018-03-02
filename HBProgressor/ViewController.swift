@@ -36,6 +36,13 @@ class ViewController: UIViewController {
         startButton.titleLabel?.font = UIFont.systemFont(ofSize: 28)
         startButton.addTarget(self, action: #selector(start), for: .touchUpInside)
         view.addSubview(startButton)
+        
+        let toClipButton = UIButton.init(frame: CGRect.init(x: startButton.frame.maxX + 30, y: 100, width: 100, height: 30))
+        toClipButton.setTitle("ToClip", for: .normal)
+        toClipButton.setTitleColor(UIColor.red, for: .normal)
+        toClipButton.titleLabel?.font = UIFont.systemFont(ofSize: 28)
+        toClipButton.addTarget(self, action: #selector(toClipVc), for: .touchUpInside)
+        view.addSubview(toClipButton)
     }
     
     @objc func start() -> () {
@@ -53,6 +60,11 @@ class ViewController: UIViewController {
         if progress >= 1 {
             timer.invalidate()
         }
+    }
+    
+    @objc func toClipVc() -> () {
+        let clipVc = HBClipViewController()
+        self.navigationController?.pushViewController(clipVc, animated: true)
     }
     
     override func didReceiveMemoryWarning() {
