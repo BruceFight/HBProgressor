@@ -203,7 +203,6 @@ class HBShelterView: UIView, CAAnimationDelegate {
     }
     
     func setSkipFrame(frame: CGRect) -> () {
-        clipViewLayer.frame = skipFrame
         clipBezierPath = UIBezierPath.init(rect: skipFrame)
         scopeBezierPath = UIBezierPath.init(rect: frame)
         scopeBezierPath.append(clipBezierPath)
