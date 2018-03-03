@@ -9,17 +9,33 @@
 import UIKit
 
 class HBClipViewController: UIViewController {
-
     
     fileprivate var shelterView = HBShelterView()
+    fileprivate var clipButton = UIButton()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-
+        if #available(iOS 11.0, *) {
+            
+        }else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
         shelterView = HBShelterView.init(frame: view.bounds)
         view.addSubview(shelterView)
+        
+        clipButton.setTitle("ClipAndShow", for: .normal)
+        clipButton.setTitleColor(.purple, for: .normal)
+        clipButton.addTarget(self, action: #selector(clipAndShow), for: .touchUpInside)
+        clipButton.sizeToFit()
+        clipButton.frame = CGRect.init(x: 20, y: 80, width: clipButton.bounds.width, height: clipButton.bounds.height)
+        view.addSubview(clipButton)
     }
 
+    @objc func clipAndShow() -> () {
+        let showVc = HBShowClipController()
+        showVc.clipImage = shelterView.clipImage()
+        self.navigationController?.pushViewController(showVc, animated: true)
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -38,12 +54,14 @@ enum HBSkipInitialType {
     case bottom
     case bottomRight
 }
-class HBShelterView: UIView {
+/** operation scope
+ */
+class HBShelterView: UIView, UIScrollViewDelegate {
 
     fileprivate var centerAnchorPoint : CGPoint = .zero
     fileprivate var previousTouchPoint : CGPoint = .zero
     fileprivate var currentTouchPoint : CGPoint = .zero
-    
+    fileprivate var activityScrollView : UIScrollView = UIScrollView()
     fileprivate var _imageView = UIImageView()
     fileprivate var assistBigView : UIView = UIView()
     fileprivate var assistSmallView : UIView = UIView()
@@ -52,15 +70,31 @@ class HBShelterView: UIView {
     fileprivate var scopeLineWidth : CGFloat = 5
     fileprivate var scopeMarginWidth : CGFloat = 30
     fileprivate var skipInitialType : HBSkipInitialType?
-
+    fileprivate var totalScale : CGFloat = 1
+    fileprivate var animationDuration : TimeInterval = 0.25
+    
+    var image : UIImage = #imageLiteral(resourceName: "lufei") {
+        didSet{
+            _imageView.image = image
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        layer.masksToBounds = true
         backgroundColor = .red
-        _imageView.image = #imageLiteral(resourceName: "lufei")
+        activityScrollView.frame = frame
         _imageView.frame = frame
-        let tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(tap))
-        _imageView.addGestureRecognizer(tapGesture)
-        addSubview(_imageView)
+        _imageView.image = image
+        if #available(iOS 11.0, *) {
+            activityScrollView.contentInsetAdjustmentBehavior = .never
+        }
+        activityScrollView.minimumZoomScale = 0.5
+        activityScrollView.maximumZoomScale = 2.5
+        activityScrollView.delegate = self
+        _imageView.isUserInteractionEnabled = true
+        activityScrollView.addSubview(_imageView)
+        addSubview(activityScrollView)
         
         skipFrame = CGRect.init(x: (frame.width - 100) / 2, y: (frame.height - 100) / 2, width: 100, height: 100)
         centerAnchorPoint = CGPoint.init(x: frame.width / 2, y: frame.height / 2)
@@ -79,15 +113,6 @@ class HBShelterView: UIView {
         addSubview(clipView)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-    }
-    
-    @objc func tap() -> () {
-        print("❤️ ---> tapped")
-    }
-    
     fileprivate var kIfTouched : Bool = false
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         super.hitTest(point, with: event)
@@ -98,7 +123,7 @@ class HBShelterView: UIView {
             return clipView
         }else {
             kIfTouched = false
-            return _imageView
+            return activityScrollView
         }
     }
     
@@ -205,13 +230,19 @@ class HBShelterView: UIView {
         resetToCenter()
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+//MARK: - Methods
+extension HBShelterView {
     func setSkipFrame(frame: CGRect) -> () {
         assistBigView.frame = CGRect.init(x: skipFrame.origin.x - scopeMarginWidth, y: skipFrame.origin.y - scopeMarginWidth, width: skipFrame.width + 2 * scopeMarginWidth, height: skipFrame.height + 2 * scopeMarginWidth)
         assistSmallView.frame = CGRect.init(x: skipFrame.origin.x + scopeMarginWidth + scopeLineWidth, y: skipFrame.origin.y + scopeMarginWidth + scopeLineWidth, width: skipFrame.width - 2 * (scopeMarginWidth + scopeLineWidth), height: skipFrame.height - 2 * (scopeMarginWidth + scopeLineWidth))
         clipView.frame = skipFrame
     }
     
-    fileprivate var animationDuration : TimeInterval = 0.25
     func resetToCenter() -> () {
         skipFrame = CGRect.init(x: (bounds.width - skipFrame.width) / 2, y: (bounds.height - skipFrame.height) / 2, width: skipFrame.width, height: skipFrame.height)
         UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseInOut, animations: {
@@ -220,12 +251,55 @@ class HBShelterView: UIView {
             self.clipView.frame = self.skipFrame
         })
     }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+
+    func clipImage() -> UIImage {
+        var _clipImage = UIImage()
+        UIGraphicsBeginImageContext(CGSize.init(width: bounds.width, height: bounds.height))
+        if let currentContext = UIGraphicsGetCurrentContext() {
+            layer.render(in: currentContext)
+        }
+        if let result = UIGraphicsGetImageFromCurrentImageContext() {
+            _clipImage = result
+        }
+        UIGraphicsEndImageContext()
+        
+        if let sourceImageRef = _clipImage.cgImage {
+            if let cgImage = sourceImageRef.cropping(to: clipView.frame) {
+                _clipImage = UIImage.init(cgImage: cgImage)
+            }
+        }
+        return _clipImage
     }
 }
 
+//MARK: - UIScrollView Delegate
+extension HBShelterView {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return _imageView
+    }
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        // 延中心点缩放
+        var rect = _imageView.frame
+        rect.origin.x = 0
+        rect.origin.y = 0
+        
+        let widthDisRatio = (self.frame.width - rect.size.width) / 2.0
+        let heightDisRatio = (self.frame.height - rect.size.height) / 2.0
+        
+        if (rect.size.width < self.frame.width) {
+            rect.origin.x = CGFloat(floorf(Float(widthDisRatio)))
+        }
+        if (rect.size.height < self.frame.height) {
+            rect.origin.y = CGFloat(floorf(Float(heightDisRatio)))
+        }
+        
+        _imageView.frame = rect
+    }
+}
+
+/** indicate the clip scope
+ */
 class HBClipView: UIView {
     
     fileprivate var scopeBezierPath : UIBezierPath = UIBezierPath()
@@ -236,7 +310,7 @@ class HBClipView: UIView {
         scopeLayer.borderWidth = 0
         scopeLayer.lineWidth = 5
         scopeLayer.strokeColor = UIColor.clear.cgColor
-        scopeLayer.fillColor = RGB(0x000000).cgColor
+        scopeLayer.fillColor = HB_CLIPRGB(0x000000).cgColor
         scopeLayer.fillRule = "even-odd"
         scopeLayer.path = scopeBezierPath.cgPath
         scopeLayer.opacity = 0.5
@@ -258,27 +332,21 @@ class HBClipView: UIView {
     
 }
 
-/**
- RGBA颜色
- 
+/** RGBA颜色
  - parameter colorValue: 颜色值，16进制表示，如：0xffffff
- - parameter alpha:      透明度值
- 
+ - parameter alpha: 透明度值
  - returns: 相应颜色
  */
-func RGBA(_ colorValue: UInt32, alpha: CGFloat) -> UIColor {
+func HB_CLIPRGBA(_ colorValue: UInt32, alpha: CGFloat) -> UIColor {
     
     return UIColor.init(red: CGFloat((colorValue>>16)&0xFF)/256.0, green: CGFloat((colorValue>>8)&0xFF)/256.0, blue: CGFloat((colorValue)&0xFF)/256.0 , alpha: alpha)
 }
 
-/**
- RGB颜色
- 
+/** RGB颜色
  - parameter colorValue: 颜色值，16进制表示，如：0xffffff
- 
  - returns: 相应颜色
  */
-func RGB(_ colorValue: UInt32) -> UIColor {
-    return RGBA(colorValue, alpha: 1.0)
+func HB_CLIPRGB(_ colorValue: UInt32) -> UIColor {
+    return HB_CLIPRGBA(colorValue, alpha: 1.0)
 }
 

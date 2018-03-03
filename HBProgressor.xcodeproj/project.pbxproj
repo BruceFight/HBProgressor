@@ -16,6 +16,7 @@
 		2A498E0C2047AD830064C0B2 /* HBProgressorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A498E0B2047AD830064C0B2 /* HBProgressorUITests.swift */; };
 		2A498E1A2047ADAA0064C0B2 /* HBProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A498E192047ADAA0064C0B2 /* HBProgressView.swift */; };
 		2A498E20204803950064C0B2 /* HBClipViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A498E1F204803950064C0B2 /* HBClipViewController.swift */; };
+		2A5FEAD9204A97FA00097A9A /* HBShowClipController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A5FEAD8204A97FA00097A9A /* HBShowClipController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		2A498E0D2047AD830064C0B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A498E192047ADAA0064C0B2 /* HBProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HBProgressView.swift; sourceTree = "<group>"; };
 		2A498E1F204803950064C0B2 /* HBClipViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HBClipViewController.swift; sourceTree = "<group>"; };
+		2A5FEAD8204A97FA00097A9A /* HBShowClipController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HBShowClipController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				2A498DF22047AD820064C0B2 /* Assets.xcassets */,
 				2A498DF42047AD820064C0B2 /* LaunchScreen.storyboard */,
 				2A498DF72047AD820064C0B2 /* Info.plist */,
+				2A5FEAD8204A97FA00097A9A /* HBShowClipController.swift */,
 			);
 			path = HBProgressor;
 			sourceTree = "<group>";
@@ -265,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A5FEAD9204A97FA00097A9A /* HBShowClipController.swift in Sources */,
 				2A498DEE2047AD820064C0B2 /* ViewController.swift in Sources */,
 				2A498DEC2047AD820064C0B2 /* AppDelegate.swift in Sources */,
 				2A498E20204803950064C0B2 /* HBClipViewController.swift in Sources */,
