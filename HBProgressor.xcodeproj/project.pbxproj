@@ -107,11 +107,11 @@
 				2A498DED2047AD820064C0B2 /* ViewController.swift */,
 				2A498E192047ADAA0064C0B2 /* HBProgressView.swift */,
 				2A498E1F204803950064C0B2 /* HBClipViewController.swift */,
+				2A5FEAD8204A97FA00097A9A /* HBShowClipController.swift */,
 				2A498DEF2047AD820064C0B2 /* Main.storyboard */,
 				2A498DF22047AD820064C0B2 /* Assets.xcassets */,
 				2A498DF42047AD820064C0B2 /* LaunchScreen.storyboard */,
 				2A498DF72047AD820064C0B2 /* Info.plist */,
-				2A5FEAD8204A97FA00097A9A /* HBShowClipController.swift */,
 			);
 			path = HBProgressor;
 			sourceTree = "<group>";
